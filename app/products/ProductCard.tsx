@@ -1,4 +1,4 @@
-import { Product } from "@/lib/mock";
+import { Product } from "@/app/generated/prisma";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 
@@ -8,7 +8,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                         <div className="relative aspect-video">
                                 {" "}
                                 <Image
-                                        src={product.image}
+                                        src={product.image ?? ""}
                                         alt={product.name}
                                         fill
                                         className=" object-center"

@@ -1,4 +1,4 @@
-export type Product = {
+type Product = {
         id: string;
         name: string;
         price: number;
@@ -7,7 +7,7 @@ export type Product = {
         category: string;
 };
 
-export const mockProducts: Product[] = [
+const mockProducts: Product[] = [
         {
                 id: "1",
                 name: "Wireless Headphones",
