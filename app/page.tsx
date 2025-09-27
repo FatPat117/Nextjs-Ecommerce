@@ -20,7 +20,6 @@ async function Products({ page }: { page: number }) {
                 skip,
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 5000));
         return (
                 <>
                         <p>Showing {products.length} products</p>
