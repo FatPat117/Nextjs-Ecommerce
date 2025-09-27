@@ -32,8 +32,10 @@ async function Products({ page }: { page: number }) {
         );
 }
 
-const HomePage = async ({ searchParams }: { searchParams: { page: string } }) => {
-        const page = Number(searchParams.page) || 1;
+const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string }> }) => {
+        const { page } = await searchParams;
+
+        const pageNumber = Number(page) || 1;
         const totalProducts = await db.product.count();
         const totalPages = Math.ceil(totalProducts / pageSize);
         return (
@@ -41,13 +43,13 @@ const HomePage = async ({ searchParams }: { searchParams: { page: string } }) =>
                         <h1 className="text-3xl font-bold mb-6">Home</h1>
 
                         <Suspense key={page} fallback={<ProductsSkeleton />}>
-                                <Products page={page} />
+                                <Products page={pageNumber} />
                         </Suspense>
                         {/* Pagination */}
                         <Pagination className="mt-8">
                                 <PaginationContent>
                                         <PaginationItem>
-                                                <PaginationPrevious href={`/?page=${page - 1}`} />
+                                                <PaginationPrevious href={`/?page=${pageNumber - 1}`} />
                                         </PaginationItem>
                                         {Array.from({ length: totalPages }).map((_, index) => (
                                                 <PaginationItem key={index}>
@@ -57,7 +59,7 @@ const HomePage = async ({ searchParams }: { searchParams: { page: string } }) =>
                                                 </PaginationItem>
                                         ))}
                                         <PaginationItem>
-                                                <PaginationNext href={`/?page=${page + 1}`} />
+                                                <PaginationNext href={`/?page=${pageNumber + 1}`} />
                                         </PaginationItem>
                                 </PaginationContent>
                         </Pagination>

@@ -21,7 +21,7 @@ model Product{
   description String?
   image String?
   slug String @unique
-
+  inventory Int @default(0)
 
   // Relation
   categoryId String
