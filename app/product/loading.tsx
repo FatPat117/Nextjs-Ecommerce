@@ -1,6 +1,24 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getProductBySlug } from "@/lib/action";
 import { Separator } from "@radix-ui/react-separator";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+        const { slug } = await params;
+        const product = await getProductBySlug(slug);
+        if (!product) {
+                return {};
+        }
+        return {
+                title: product.name,
+                description: product.description,
+                openGraph: {
+                        title: product.name,
+                        description: product.description,
+                        images: [product.image],
+                },
+        };
+}
 
 const LoadingProductPage = () => {
         return (
