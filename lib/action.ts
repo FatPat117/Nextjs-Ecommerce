@@ -72,7 +72,7 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
         });
 }
 
-export async function getCart(): Promise<ShoppingCart | null> {
+async function findCartFromCookies(): Promise<CartWithProduct | null> {
         const cartId = (await cookies()).get("cartId")?.value;
 
         const cart = await db.cart.findUnique({
@@ -89,10 +89,36 @@ export async function getCart(): Promise<ShoppingCart | null> {
         });
 
         if (!cart) return null;
+        return cart;
+}
+
+export async function getCart(): Promise<ShoppingCart | null> {
+        const cart = await findCartFromCookies();
+
+        if (!cart) return null;
 
         return {
                 ...cart,
                 size: cart.items.reduce((acc, item) => acc + item.quantity, 0),
                 subTotal: cart.items.reduce((acc, item) => acc + item.product.price * item.quantity, 0),
         };
+}
+
+async function getOrCreateCart(): Promise<CartWithProduct> {
+        const cart = await findCartFromCookies();
+
+        if (!cart) {
+                const newCart = await db.cart.create({
+                        data: {},
+                        include: { items: { include: { product: true } } },
+                });
+                (await cookies()).set("cartId", newCart.id, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === "production",
+                        maxAge: 60 * 60 * 24 * 30,
+                        sameSite: "lax",
+                });
+                return newCart;
+        }
+        return cart;
 }
