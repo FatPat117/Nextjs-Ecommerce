@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,9 +34,26 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
         if (!product) {
                 notFound();
         }
+        console.log(product);
 
+        const breadcrumbs = [
+                {
+                        label: "Products",
+                        href: "/products",
+                },
+                {
+                        label: product.category?.name,
+                        href: `/category/${product.category?.slug}`,
+                },
+                {
+                        label: product.name,
+                        href: `/product/${product.slug}`,
+                        active: true,
+                },
+        ];
         return (
-                <div className="container mx-auto p-4">
+                <div className="container mx-auto py-4">
+                        <Breadcrumbs items={breadcrumbs} />
                         <Card className="max-w-4xl mx-auto">
                                 <CardContent className="p-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                                         <div>

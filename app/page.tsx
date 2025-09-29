@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
 import {
         Pagination,
         PaginationContent,
@@ -39,7 +40,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string
         const totalPages = Math.ceil(totalProducts / pageSize);
         return (
                 <main className="container mx-auto py-4">
-                        <h1 className="text-3xl font-bold mb-6">Home</h1>
+                        <Breadcrumbs items={[{ label: "Products", href: "/products" }]} />
 
                         <Suspense key={page} fallback={<ProductsSkeleton />}>
                                 <Products page={pageNumber} />

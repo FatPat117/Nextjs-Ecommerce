@@ -34,7 +34,7 @@ export default function RootLayout({
                                                 {children}
 
                                                 <footer className="border-t border-dashed py-6">
-                                                        <div className="container mx-auto text-sm text-muted-foreground">
+                                                        <div className="container mx-auto text-sm text-muted-foreground text-center">
                                                                 &copy; {new Date().getFullYear()} Store. All rights
                                                                 reserved.
                                                         </div>
