@@ -25,7 +25,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                                         <CardDescription>{product.description}</CardDescription>
                                 </CardHeader>
                                 <CardFooter>
-                                        <p className="text-gray-600">{formatPrice(product.price)}</p>
+                                        <p className="">{formatPrice(product.price)}</p>
                                 </CardFooter>
                         </Card>
                 </Link>

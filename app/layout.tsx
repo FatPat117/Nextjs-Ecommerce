@@ -1,3 +1,5 @@
+import { ModeToggle } from "@/components/mode-toggle";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -18,18 +20,29 @@ export default function RootLayout({
         children: React.ReactNode;
 }>) {
         return (
-                <html lang="en" className="mdl-js">
+                <html lang="en" className="mdl-js" suppressHydrationWarning>
                         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                                {/* Header */}
-                                <ul>
-                                        <li>
-                                                <Link href={"/"}>Home </Link>
-                                        </li>
-                                        <li>
-                                                <Link href={"products"}>Products</Link>
-                                        </li>
-                                </ul>
-                                {children}
+                                <ThemeProvider
+                                        attribute="class"
+                                        defaultTheme="system"
+                                        enableSystem
+                                        disableTransitionOnChange
+                                >
+                                        <>
+                                                <ul>
+                                                        <li>
+                                                                <Link href={"/"}>Home </Link>
+                                                        </li>
+                                                        <li>
+                                                                <Link href={"products"}>Products</Link>
+                                                        </li>
+                                                        <li>
+                                                                <ModeToggle />
+                                                        </li>
+                                                </ul>
+                                                {children}
+                                        </>
+                                </ThemeProvider>
                         </body>
                 </html>
         );
