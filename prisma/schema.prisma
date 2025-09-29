@@ -67,5 +67,5 @@ model CartItem {
 
   @@unique([cartId, productId ])
   @@index([cartId])
-  @@index([productId])
+  @@index([productId])  
 }

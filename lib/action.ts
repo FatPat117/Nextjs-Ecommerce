@@ -1,5 +1,6 @@
 "use server";
 import { Prisma } from "@/app/generated/prisma";
+import { cookies } from "next/headers";
 import db from "./db";
 
 export interface GetProductsParams {
@@ -9,6 +10,19 @@ export interface GetProductsParams {
         page?: number;
         pageSize?: number;
 }
+
+export type CartWithProduct = Prisma.CartGetPayload<{
+        include: {
+                items: {
+                        include: { product: true };
+                };
+        };
+}>;
+
+export type ShoppingCart = CartWithProduct & {
+        size: number;
+        subTotal: number;
+};
 
 export async function getProductBySlug(slug: string) {
         const product = await db.product.findUnique({
@@ -56,4 +70,29 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
                 skip,
                 take,
         });
+}
+
+export async function getCart(): Promise<ShoppingCart | null> {
+        const cartId = (await cookies()).get("cartId")?.value;
+
+        const cart = await db.cart.findUnique({
+                where: {
+                        id: cartId,
+                },
+                include: {
+                        items: {
+                                include: {
+                                        product: true,
+                                },
+                        },
+                },
+        });
+
+        if (!cart) return null;
+
+        return {
+                ...cart,
+                size: cart.items.reduce((acc, item) => acc + item.quantity, 0),
+                subTotal: cart.items.reduce((acc, item) => acc + item.product.price * item.quantity, 0),
+        };
 }
