@@ -2,7 +2,7 @@
 import { Prisma } from "@/app/generated/prisma";
 import db from "./db";
 
-interface GetProductsParams {
+export interface GetProductsParams {
         query?: string;
         slug?: string;
         sort?: string | null;
@@ -40,7 +40,7 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
                 };
         }
 
-        let orderBy: Record<string, "asc" | "desc" | undefined> = {};
+        let orderBy: Prisma.ProductOrderByWithRelationInput | undefined = undefined;
         if (sort == "price-asc") {
                 orderBy = { price: "asc" };
         } else if (sort == "price-desc") {
