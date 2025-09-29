@@ -1,17 +1,19 @@
-import db from "@/lib/db";
+"use client";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-const CategorySidebar = async ({ activeCategory }: { activeCategory: string }) => {
-        const categories = await db.category.findMany({
-                select: {
-                        name: true,
-                        slug: true,
-                },
-                orderBy: {
-                        name: "asc",
-                },
-        });
+type Category = {
+        name: string;
+        slug: string;
+};
 
+type CategoryProps = {
+        categories: Category[];
+};
+
+const CategorySidebar = ({ categories }: CategoryProps) => {
+        const params = useParams();
+        const activeCategory = params.slug;
         return (
                 <div className="w-[125px] flex-none">
                         <h3 className="text-xs text-muted-foreground mb-2">Collections</h3>

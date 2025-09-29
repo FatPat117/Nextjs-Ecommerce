@@ -81,12 +81,6 @@ const CategoryPage = async ({ params, searchParams }: ParamsProps) => {
                 <div className="container mx-auto py-4">
                         <Breadcrumbs items={breadcrumbs} />
 
-                        <div className="flex gap-3 text-sm mb-8">
-                                <Link href={`/search/${slug}`}>Latest</Link>
-                                <Link href={`/search/${slug}?sort=price-asc`}>Price: Low to High</Link>
-                                <Link href={`/search/${slug}?sort=price-desc`}>Price: High to Low</Link>
-                        </div>
-
                         <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
                                 <Products slug={slug} sort={sort} />
                         </Suspense>
