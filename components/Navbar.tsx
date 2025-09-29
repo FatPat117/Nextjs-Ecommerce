@@ -5,11 +5,9 @@ import { ModeToggle } from "./mode-toggle";
 import SearchInput from "./SearchInput";
 import { Button } from "./ui/button";
 export const categories = [
-        { id: 1, name: "Electronics", href: "/category/electronics" },
-        { id: 2, name: "Clothing", href: "/category/clothing" },
-        { id: 3, name: "Books", href: "/category/books" },
-        { id: 4, name: "Toys", href: "/category/toys" },
-        { id: 5, name: "Other", href: "/category/other" },
+        { id: 1, name: "Electronics", href: "/search/electronics" },
+        { id: 2, name: "Clothing", href: "/search/clothing" },
+        { id: 3, name: "Home", href: "/search/home" },
 ];
 
 const Navbar = () => {
