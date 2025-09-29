@@ -10,7 +10,7 @@ interface BreadcrumbsProps {
 }
 const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
         return (
-                <Breadcrumb className="mb-5">
+                <Breadcrumb className="mb-6 h-8">
                         <BreadcrumbList>
                                 <BreadcrumbItem>
                                         <BreadcrumbLink href="/" className="flex items-center gap-2">

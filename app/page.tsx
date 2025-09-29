@@ -53,7 +53,10 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string
                                         </PaginationItem>
                                         {Array.from({ length: totalPages }).map((_, index) => (
                                                 <PaginationItem key={index}>
-                                                        <PaginationLink href={`/?page=${index + 1}`}>
+                                                        <PaginationLink
+                                                                href={`/?page=${index + 1}`}
+                                                                isActive={index + 1 === pageNumber}
+                                                        >
                                                                 {index + 1}
                                                         </PaginationLink>
                                                 </PaginationItem>
