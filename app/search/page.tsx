@@ -8,7 +8,7 @@ type SearchParamsProps = {
 };
 
 const SearchPage = async ({ searchParams }: SearchParamsProps) => {
-        let { query, sort, page, pageSize } = await searchParams;
+        let { query, sort } = await searchParams;
 
         sort = String(sort);
         query = query?.trim() ?? "";
@@ -25,7 +25,7 @@ const SearchPage = async ({ searchParams }: SearchParamsProps) => {
                 <main className="container mx-auto py-4">
                         <Breadcrumbs items={breadcrumbs} />
                         <Suspense key={`${query}-${sort}`} fallback={<ProductsSkeleton />}>
-                                <ProductsListServerWrapper params={{ query, sort, page: 1 }} />
+                                <ProductsListServerWrapper params={{ query, sort }} />
                         </Suspense>
                 </main>
         );
