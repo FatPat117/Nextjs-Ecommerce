@@ -22,7 +22,6 @@ async function Products({ page }: { page: number }) {
 
         return (
                 <>
-                        <p>Showing {products.length} products</p>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {products.map((product) => (
                                         <ProductCard key={product.id} product={product} />
@@ -39,7 +38,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string
         const totalProducts = await db.product.count();
         const totalPages = Math.ceil(totalProducts / pageSize);
         return (
-                <main className="container mx-auto p-4">
+                <main className="container mx-auto py-4">
                         <h1 className="text-3xl font-bold mb-6">Home</h1>
 
                         <Suspense key={page} fallback={<ProductsSkeleton />}>

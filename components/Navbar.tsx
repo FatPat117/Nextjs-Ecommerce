@@ -1,8 +1,9 @@
 import { Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import MobileNavbar from "./MobileNavbar";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
-const categories = [
+export const categories = [
         { id: 1, name: "Electronics", href: "/category/electronics" },
         { id: 2, name: "Clothing", href: "/category/clothing" },
         { id: 3, name: "Books", href: "/category/books" },
@@ -12,12 +13,12 @@ const categories = [
 
 const Navbar = () => {
         return (
-                <div className="border-b ">
+                <div className="border-b border-dashed ">
                         <div className="container mx-auto flex h-16 items-center justify-between">
                                 {/* Flex */}
                                 <div>
                                         <div className="flex items-center gap-6">
-                                                <Link href="/" className="text-2xl font-bold">
+                                                <Link href="/" className="text-2xl font-bold hidden md:block">
                                                         Store
                                                 </Link>
                                                 <nav className="hidden md:flex items-center gap-6">
@@ -31,11 +32,14 @@ const Navbar = () => {
                                                                 </Link>
                                                         ))}
                                                 </nav>
+
+                                                {/* Mobile nav */}
+                                                <MobileNavbar />
                                         </div>
                                 </div>
 
                                 {/* Right */}
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
                                         {/* Search */}
                                         <Button variant={"ghost"} size={"icon"} asChild>
                                                 <Link href="/search">

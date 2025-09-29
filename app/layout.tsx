@@ -32,6 +32,13 @@ export default function RootLayout({
                                                         <Navbar />
                                                 </header>
                                                 {children}
+
+                                                <footer className="border-t border-dashed py-6">
+                                                        <div className="container mx-auto text-sm text-muted-foreground">
+                                                                &copy; {new Date().getFullYear()} Store. All rights
+                                                                reserved.
+                                                        </div>
+                                                </footer>
                                         </>
                                 </ThemeProvider>
                         </body>
