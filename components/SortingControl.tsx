@@ -50,7 +50,7 @@ const SortingControl = () => {
                                 <li>
                                         {" "}
                                         <Link
-                                                href={`/search/${slug}?sort=price-desc`}
+                                                href={createSortUrl("price-desc")}
                                                 className={`text-sm hover:text-primary ${
                                                         currentSort == "price-desc" ? " underline" : ""
                                                 }`}

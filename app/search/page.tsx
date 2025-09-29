@@ -5,10 +5,18 @@ import ProductCard from "../products/ProductCard";
 import ProductsSkeleton from "../ProductsSkeleton";
 
 type SearchParamsProps = {
-        searchParams: Promise<{ query?: string | null }>;
+        searchParams: Promise<{ query?: string | null; sort?: string | null }>;
 };
 
-async function Products({ query = "" }: { query: string }) {
+async function Products({ query = "", sort = null }: { query: string; sort: string | null }) {
+        let orderBy: Record<string, "asc" | "desc" | undefined> = {};
+
+        if (sort == "price-asc") {
+                orderBy = { price: "asc" };
+        } else if (sort == "price-desc") {
+                orderBy = { price: "desc" };
+        }
+
         const products = await db.product.findMany({
                 where: {
                         OR: [
@@ -17,6 +25,7 @@ async function Products({ query = "" }: { query: string }) {
                         ],
                 },
                 take: 18,
+                ...(orderBy && { orderBy }),
         });
 
         if (products.length == 0) {
@@ -40,8 +49,10 @@ async function Products({ query = "" }: { query: string }) {
 }
 
 const SearchPage = async ({ searchParams }: SearchParamsProps) => {
-        let { query } = await searchParams;
+        let { query, sort } = await searchParams;
+        sort = String(sort);
         query = query?.trim() ?? "";
+
         const breadcrumbs = [
                 { label: "Products", href: "/products" },
                 {
@@ -53,8 +64,8 @@ const SearchPage = async ({ searchParams }: SearchParamsProps) => {
         return (
                 <main className="container mx-auto py-4">
                         <Breadcrumbs items={breadcrumbs} />
-                        <Suspense key={query} fallback={<ProductsSkeleton />}>
-                                <Products query={query} />
+                        <Suspense key={`${query}-${sort}`} fallback={<ProductsSkeleton />}>
+                                <Products query={query} sort={sort} />
                         </Suspense>
                 </main>
         );
