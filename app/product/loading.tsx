@@ -1,12 +1,13 @@
+import BreadcrumbsSkeleton from "@/components/BreadcrumbsSkeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getProductBySlug } from "@/lib/action";
 import { Separator } from "@radix-ui/react-separator";
 
 const LoadingProductPage = () => {
         return (
-                <div className="container mx-auto p-4">
-                        <Card className="max-w-3xl mx-auto">
+                <div className="container mx-auto py-4">
+                        <BreadcrumbsSkeleton />
+                        <Card>
                                 <CardContent className="p-6">
                                         <Skeleton className="h-10 w-full" />
                                         <div className="flex items-center gap-2 my-4">

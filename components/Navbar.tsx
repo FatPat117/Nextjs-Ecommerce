@@ -2,6 +2,7 @@ import { Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import MobileNavbar from "./MobileNavbar";
 import { ModeToggle } from "./mode-toggle";
+import SearchInput from "./SearchInput";
 import { Button } from "./ui/button";
 export const categories = [
         { id: 1, name: "Electronics", href: "/category/electronics" },
@@ -36,6 +37,11 @@ const Navbar = () => {
                                                 {/* Mobile nav */}
                                                 <MobileNavbar />
                                         </div>
+                                </div>
+
+                                {/* Search */}
+                                <div className="hidden md:block w-full mx-4 md:mx-8">
+                                        <SearchInput />
                                 </div>
 
                                 {/* Right */}

@@ -54,7 +54,7 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
         return (
                 <div className="container mx-auto py-4">
                         <Breadcrumbs items={breadcrumbs} />
-                        <Card className="max-w-4xl mx-auto">
+                        <Card>
                                 <CardContent className="p-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                                         <div>
                                                 <div className="relative rounded-lg h-[200px] md:h-[400px]">
