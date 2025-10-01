@@ -1,7 +1,7 @@
 "use client";
 import { CartItemWithProduct, setProductQuantity } from "@/lib/action";
 import { formatPrice } from "@/lib/utils";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -34,9 +34,32 @@ const CartItem = ({ cartItem }: CartItemProps) => {
                         setIsLoading(false);
                 }
         };
+
+        const handleRemove = async () => {
+                try {
+                        setIsLoading(true);
+                        await setProductQuantity({ productId: cartItem.productId, quantity: 0 });
+                } catch (error) {
+                        console.error("Failed to remove product", error);
+                } finally {
+                        setIsLoading(false);
+                }
+        };
         return (
                 <li className="border-b border-muted flex py-4 justify-between">
                         <div className="flex items-start space-x-4">
+                                <div className="absolute z-10  -mt-2 ">
+                                        <Button
+                                                variant={"ghost"}
+                                                size={"icon"}
+                                                disabled={isLoading}
+                                                className="w-7 h-7 rounded-full bg-muted text-muted-foreground"
+                                                onClick={handleRemove}
+                                        >
+                                                <X className="w-4 h-4" />
+                                        </Button>
+                                </div>
+
                                 <div className="overflow-hidden rounded-md border border-muted w-16 h-16">
                                         <Image
                                                 className="h-full w-full object-cover"
