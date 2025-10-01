@@ -74,7 +74,7 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
 
 async function findCartFromCookies(): Promise<CartWithProduct | null> {
         const cartId = (await cookies()).get("cartId")?.value;
-
+        if (!cartId) return null;
         const cart = await db.cart.findUnique({
                 where: {
                         id: cartId,
@@ -104,7 +104,7 @@ export async function getCart(): Promise<ShoppingCart | null> {
         };
 }
 
-async function getOrCreateCart(): Promise<CartWithProduct> {
+export async function getOrCreateCart(): Promise<CartWithProduct> {
         const cart = await findCartFromCookies();
 
         if (!cart) {
@@ -121,4 +121,35 @@ async function getOrCreateCart(): Promise<CartWithProduct> {
                 return newCart;
         }
         return cart;
+}
+
+export async function addToCart(productId: string, quantity: number = 1) {
+        if (quantity < 1) {
+                throw new Error("Quantity must be at least 1");
+        }
+
+        const cart = await getOrCreateCart();
+        const existingItem = cart.items.find((item) => item.productId === productId);
+
+        if (existingItem) {
+                await db.cartItem.update({
+                        where: {
+                                id: existingItem.id,
+                        },
+                        data: {
+                                quantity: existingItem.quantity + quantity,
+                        },
+                        include: {
+                                product: true,
+                        },
+                });
+        } else {
+                await db.cartItem.create({
+                        data: {
+                                cartId: cart.id, // <-- nhờ dòng này mà CartItem liên kết với Cart
+                                productId: productId,
+                                quantity: quantity,
+                        },
+                });
+        }
 }

@@ -1,11 +1,10 @@
+import AddToCartBtn from "@/components/AddToCartBtn";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProductBySlug } from "@/lib/action";
 import { formatPrice } from "@/lib/utils";
-import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -115,10 +114,7 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 
                                                 <Separator className="my-4" />
                                                 <div>
-                                                        <Button disabled={product.inventory === 0} className="w-full">
-                                                                <ShoppingCart className="mr-2 w-4 h-4" />
-                                                                {product.inventory > 0 ? "Add to Cart" : "Out of Stock"}
-                                                        </Button>
+                                                        <AddToCartBtn product={product} />
                                                 </div>
                                         </div>
                                 </CardContent>
