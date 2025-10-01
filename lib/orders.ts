@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import db from "./db";
+import { createCheckoutSession } from "./stripe";
 
 export async function createOrder() {
         const cartId = (await cookies()).get("cardId")?.value;
@@ -25,6 +26,18 @@ export async function createOrder() {
         });
 
         if (!cart || cart.items.length === 0) return;
+
+        // Calculate total price
+
+        // Create Order Record
+
+        // Create OrderItem Record
+
+        // Clear Cart
+
+        // Revalidate Cache
+
+        // Return order
 
         try {
                 const order = await db.$transaction(async (tx) => {
@@ -61,22 +74,45 @@ export async function createOrder() {
 
                         return newOrder;
                 });
+
+                // 1. Reload full order
+
+                const fullOrder = await db.order.findUnique({
+                        where: {
+                                id: order.id,
+                        },
+                        include: {
+                                items: {
+                                        include: { product: true },
+                                },
+                        },
+                });
+
+                // 2. Confirm the order was loaded
+                if (!fullOrder) throw new Error("Order not found");
+
+                // 3. Create Stripe Session
+                const { sessionId, sessionUrl } = await createCheckoutSession(fullOrder);
+
+                // 4. Return the session url and handle the erros
+                if (!sessionId || !sessionUrl) throw new Error("Failed to create Stripe Session");
+
+                // 5. Store the session id in the order & change the order status
+                await db.order.update({
+                        where: {
+                                id: order.id,
+                        },
+                        data: {
+                                stripeSessionId: sessionId,
+                                status: "PENDING",
+                        },
+                });
+
+                // 6.Clear the cart
                 (await cookies()).delete("cartId");
                 return order;
         } catch (error) {
                 console.error("Error creating order", error);
                 throw new Error("Failed to create Order");
         }
-
-        // Calculate total price
-
-        // Create Order Record
-
-        // Create OrderItem Record
-
-        // Clear Cart
-
-        // Revalidate Cache
-
-        // Return order
 }
