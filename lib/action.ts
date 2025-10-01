@@ -92,6 +92,9 @@ async function findCartFromCookies(): Promise<CartWithProduct | null> {
                                                 include: {
                                                         product: true,
                                                 },
+                                                orderBy: {
+                                                        createdAt: "desc",
+                                                },
                                         },
                                 },
                         });

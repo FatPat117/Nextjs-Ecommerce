@@ -1,4 +1,5 @@
 import CartItem from "@/components/CartItem";
+import CartSummary from "@/components/CartSummary";
 import { Button } from "@/components/ui/button";
 import { getCart } from "@/lib/action";
 import Link from "next/link";
@@ -18,11 +19,15 @@ const CartPage = async () => {
                                         </Button>
                                 </div>
                         ) : (
-                                <div className="flex flex-col ">
-                                        {cart.items.map((item) => (
-                                                <CartItem key={item.id} cartItem={item} />
-                                        ))}
-                                </div>
+                                <>
+                                        <div className="flex flex-col ">
+                                                {cart.items.map((item) => (
+                                                        <CartItem key={item.id} cartItem={item} />
+                                                ))}
+                                        </div>
+
+                                        <CartSummary />
+                                </>
                         )}
                 </main>
         );

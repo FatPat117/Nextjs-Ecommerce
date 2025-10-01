@@ -53,7 +53,7 @@ const CartItem = ({ cartItem }: CartItemProps) => {
                                                 variant={"ghost"}
                                                 size={"icon"}
                                                 disabled={isLoading}
-                                                className="w-7 h-7 rounded-full bg-muted text-muted-foreground"
+                                                className="w-7 h-7 rounded-full bg-muted text-muted-foreground cursor-pointer"
                                                 onClick={handleRemove}
                                         >
                                                 <X className="w-4 h-4" />
