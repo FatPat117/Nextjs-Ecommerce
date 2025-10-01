@@ -19,6 +19,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string
         const pageNumber = Number(page) || 1;
         const totalProducts = await db.product.count();
         const totalPages = Math.ceil(totalProducts / pageSize);
+
         return (
                 <main className="container mx-auto py-4">
                         <Breadcrumbs items={[{ label: "Products", href: "/products" }]} />
