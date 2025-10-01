@@ -163,3 +163,40 @@ export async function addToCart(productId: string, quantity: number = 1) {
         }
         revalidateTag("cart");
 }
+
+export async function setProductQuantity({ productId, quantity }: { productId: string; quantity: number }) {
+        if (quantity < 0) {
+                throw new Error("Quantity must be at least 0");
+        }
+        const cart = await getCart();
+
+        if (!cart) {
+                throw new Error("Cart not found");
+        }
+
+        try {
+                if (quantity == 0) {
+                        await db.cartItem.deleteMany({
+                                where: {
+                                        cartId: cart.id,
+                                        productId: productId,
+                                },
+                        });
+                        revalidateTag("cart");
+                } else {
+                        await db.cartItem.updateMany({
+                                where: {
+                                        cartId: cart.id,
+                                        productId: productId,
+                                },
+                                data: {
+                                        quantity: quantity,
+                                },
+                        });
+                }
+                revalidateTag("cart");
+        } catch (error) {
+                console.error(error);
+                throw new Error("Failed to set product quantity");
+        }
+}

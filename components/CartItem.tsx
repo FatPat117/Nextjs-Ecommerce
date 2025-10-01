@@ -1,7 +1,9 @@
-import { CartItemWithProduct } from "@/lib/action";
+"use client";
+import { CartItemWithProduct, setProductQuantity } from "@/lib/action";
 import { formatPrice } from "@/lib/utils";
 import { Minus, Plus } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import { Button } from "./ui/button";
 
 interface CartItemProps {
@@ -9,6 +11,29 @@ interface CartItemProps {
 }
 
 const CartItem = ({ cartItem }: CartItemProps) => {
+        const [isLoading, setIsLoading] = useState(false);
+
+        const handleIncrement = async () => {
+                try {
+                        setIsLoading(true);
+                        await setProductQuantity({ productId: cartItem.productId, quantity: cartItem.quantity + 1 });
+                } catch (error) {
+                        console.error("Failed to increment product quantity", error);
+                } finally {
+                        setIsLoading(false);
+                }
+        };
+
+        const handleDecrement = async () => {
+                try {
+                        setIsLoading(true);
+                        await setProductQuantity({ productId: cartItem.productId, quantity: cartItem.quantity - 1 });
+                } catch (error) {
+                        console.error("Failed to decrement product quantity", error);
+                } finally {
+                        setIsLoading(false);
+                }
+        };
         return (
                 <li className="border-b border-muted flex py-4 justify-between">
                         <div className="flex items-start space-x-4">
@@ -32,11 +57,21 @@ const CartItem = ({ cartItem }: CartItemProps) => {
                                 <p className="font-medium">{formatPrice(cartItem.product.price)}</p>
 
                                 <div className="flex items-center border border-muted rounded-full">
-                                        <Button variant={"ghost"} className="cursor-pointer rounded-l-full">
+                                        <Button
+                                                variant={"ghost"}
+                                                disabled={isLoading}
+                                                className="cursor-pointer rounded-l-full"
+                                                onClick={handleDecrement}
+                                        >
                                                 <Minus className="h-4 w-4" />
                                         </Button>
                                         <p className="w-6 text-center">{cartItem.quantity}</p>
-                                        <Button variant={"ghost"} className="cursor-pointer rounded-r-full">
+                                        <Button
+                                                variant={"ghost"}
+                                                disabled={isLoading}
+                                                className="cursor-pointer rounded-r-full"
+                                                onClick={handleIncrement}
+                                        >
                                                 <Plus className="h-4 w-4" />
                                         </Button>
                                 </div>
