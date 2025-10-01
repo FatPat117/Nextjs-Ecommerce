@@ -1,5 +1,6 @@
-import { Search, ShoppingCart } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
+import CartIndicator from "./CartIndicator";
 import MobileNavbar from "./MobileNavbar";
 import { ModeToggle } from "./mode-toggle";
 import SearchInput from "./SearchInput";
@@ -52,11 +53,7 @@ const Navbar = () => {
                                         </Button>
 
                                         {/* Cart */}
-                                        <Button variant={"ghost"} size={"icon"} asChild>
-                                                <Link href="/cart">
-                                                        <ShoppingCart className="h-5 w-5" />
-                                                </Link>
-                                        </Button>
+                                        <CartIndicator />
 
                                         {/* Theme */}
                                         <ModeToggle />
