@@ -8,10 +8,10 @@ export async function GET(request: NextRequest) {
         if (!sessionId) {
                 notFound();
         }
-
+        let orderId: string | undefined;
         try {
                 const session = await stripe.checkout.sessions.retrieve(sessionId);
-                const orderId = session.metadata?.orderId;
+                orderId = session.metadata?.orderId;
 
                 if (!orderId) {
                         notFound();
@@ -37,12 +37,12 @@ export async function GET(request: NextRequest) {
                                         stripeSessionId: null,
                                 },
                         });
+                } else {
+                        notFound();
                 }
-
-                return NextResponse.redirect(new URL("/", request.url));
         } catch (error) {
                 console.error("Error retrieving session", error);
         }
 
-        return NextResponse.redirect(new URL("/cart", request.url));
+        return orderId ? NextResponse.redirect(new URL(`/order/${orderId}`, request.url)) : notFound();
 }

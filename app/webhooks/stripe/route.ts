@@ -12,6 +12,9 @@ export async function POST(request: NextRequest) {
         }
 
         const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+        if (!webhookSecret) {
+                return new NextResponse("Missing Stripe webhook secret", { status: 500 });
+        }
 
         try {
                 const event = await stripe.webhooks.constructEventAsync(payload, signature, webhookSecret);
