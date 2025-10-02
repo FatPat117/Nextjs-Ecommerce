@@ -16,7 +16,7 @@ const CartPage = async () => {
                 try {
                         result = await createOrder();
                 } catch (error) {
-                        console.error("checkout erorr", error);
+                        console.error("checkout error", error);
                 }
                 console.log(result);
                 if (result) {
