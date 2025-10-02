@@ -37,8 +37,8 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
                 };
         });
 
-        const successUrl = `${process.env.NEXT_PUBLIC_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`;
-        const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/cart?cancel=true`;
+        const successUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`;
 
         try {
                 // Create checkout session

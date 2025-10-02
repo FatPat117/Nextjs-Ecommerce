@@ -4,13 +4,13 @@ import { cookies } from "next/headers";
 import db from "./db";
 import { createCheckoutSession, OrderWithItemsAndProduct } from "./stripe";
 
-export type ProcesCheckoutResponse = {
+export type ProcessCheckoutResponse = {
         order: OrderWithItemsAndProduct;
         sessionUrl: string;
 };
 
 export async function createOrder() {
-        const cartId = (await cookies()).get("cardId")?.value;
+        const cartId = (await cookies()).get("cartId")?.value;
 
         if (!cartId) return;
 
@@ -113,7 +113,7 @@ export async function createOrder() {
                         },
                         data: {
                                 stripeSessionId: sessionId,
-                                status: "PENDING",
+                                status: "pending_payment",
                         },
                 });
 
