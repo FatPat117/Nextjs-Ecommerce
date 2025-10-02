@@ -2,7 +2,12 @@
 
 import { cookies } from "next/headers";
 import db from "./db";
-import { createCheckoutSession } from "./stripe";
+import { createCheckoutSession, OrderWithItemsAndProduct } from "./stripe";
+
+export type ProcesCheckoutResponse = {
+        order: OrderWithItemsAndProduct;
+        sessionUrl: string;
+};
 
 export async function createOrder() {
         const cartId = (await cookies()).get("cardId")?.value;
@@ -27,6 +32,7 @@ export async function createOrder() {
 
         if (!cart || cart.items.length === 0) return;
 
+        let orderId: null | string = null;
         // Calculate total price
 
         // Create Order Record
@@ -74,7 +80,7 @@ export async function createOrder() {
 
                         return newOrder;
                 });
-
+                orderId = order.id;
                 // 1. Reload full order
 
                 const fullOrder = await db.order.findUnique({
@@ -84,6 +90,9 @@ export async function createOrder() {
                         include: {
                                 items: {
                                         include: { product: true },
+                                        orderBy: {
+                                                createdAt: "desc",
+                                        },
                                 },
                         },
                 });
@@ -110,8 +119,18 @@ export async function createOrder() {
 
                 // 6.Clear the cart
                 (await cookies()).delete("cartId");
-                return order;
+                return { order: fullOrder, sessionUrl };
         } catch (error) {
+                if (orderId && error instanceof Error && error.message.includes("Stripe")) {
+                        await db.order.update({
+                                where: {
+                                        id: orderId,
+                                },
+                                data: {
+                                        status: "failed",
+                                },
+                        });
+                }
                 console.error("Error creating order", error);
                 throw new Error("Failed to create Order");
         }
