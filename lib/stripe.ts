@@ -50,14 +50,20 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
                         cancel_url: cancelUrl,
                         metadata: {
                                 orderId: order.id.toString(),
+                                ...(order.userId && { userId: order.userId }),
                         },
                 });
                 return {
                         sessionId: session.id,
                         sessionUrl: session.url,
                 };
-        } catch (error) {
-                console.error("Error creating checkout session", error);
-                throw new Error("Failed to create checkout session");
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+                if (error instanceof Stripe.errors.StripeError) {
+                        console.error("Stripe API Error:", error.message, error);
+                } else {
+                        console.error("Unknown Error:", error);
+                }
+                throw error;
         }
 }

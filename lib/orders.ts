@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { auth } from "./auth";
 import db from "./db";
 import { createCheckoutSession, OrderWithItemsAndProduct } from "./stripe";
 
@@ -11,7 +12,8 @@ export type ProcessCheckoutResponse = {
 
 export async function createOrder() {
         const cartId = (await cookies()).get("cartId")?.value;
-
+        const session = await auth();
+        const userId = session?.user?.id;
         if (!cartId) return;
 
         const cart = await db.cart.findUnique({
@@ -51,6 +53,7 @@ export async function createOrder() {
                         const newOrder = await tx.order.create({
                                 data: {
                                         total,
+                                        userId: userId || null,
                                 },
                         });
 
@@ -132,6 +135,6 @@ export async function createOrder() {
                         });
                 }
                 console.error("Error creating order", error);
-                throw new Error("Failed to create Order");
+                throw error;
         }
 }

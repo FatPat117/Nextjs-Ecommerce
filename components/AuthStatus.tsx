@@ -16,7 +16,6 @@ import { Skeleton } from "./ui/skeleton";
 
 const AuthStatus = () => {
         const { status, data: session } = useSession();
-        console.log(status);
 
         if (status == "loading") {
                 return <Skeleton className="w-9 h-9" />;
@@ -40,6 +39,10 @@ const AuthStatus = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                                 <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                        <Link href="/account">My Account</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
                         </DropdownMenuContent>

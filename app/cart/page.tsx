@@ -2,17 +2,21 @@ import CartItem from "@/components/CartItem";
 import CartSummary from "@/components/CartSummary";
 import { Button } from "@/components/ui/button";
 import { getCart } from "@/lib/action";
+import { auth } from "@/lib/auth";
 import { createOrder, ProcessCheckoutResponse } from "@/lib/orders";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const CartPage = async () => {
         const cart = await getCart();
-
+        const session = await auth();
+        const userId = session?.user?.id;
         const handleCheckout = async () => {
                 "use server";
                 let result: ProcessCheckoutResponse | undefined | null = null;
-
+                if (!userId) {
+                        redirect("/auth/signin");
+                }
                 try {
                         result = await createOrder();
                 } catch (error) {
