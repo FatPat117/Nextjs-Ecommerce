@@ -4,10 +4,12 @@ export const signInSchema = z.object({
         email: z.string().email({
                 message: "Please enter a valid email address",
         }),
-        password: z.string(),
+        password: z.string().min(1, {
+                message: "Please enter a password",
+        }),
 });
 
-type SingInSchema = z.infer<typeof signInSchema>;
+export type SignInSchema = z.infer<typeof signInSchema>;
 
 export const signUpSchema = z.object({
         email: z.string().email({
