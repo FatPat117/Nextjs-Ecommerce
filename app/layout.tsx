@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -27,26 +28,28 @@ export default function RootLayout({
         return (
                 <html lang="en" className="mdl-js" suppressHydrationWarning>
                         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                                <ThemeProvider
-                                        attribute="class"
-                                        defaultTheme="system"
-                                        enableSystem
-                                        disableTransitionOnChange
-                                >
-                                        <>
-                                                <header>
-                                                        <Navbar />
-                                                </header>
-                                                {children}
+                                <SessionProvider>
+                                        <ThemeProvider
+                                                attribute="class"
+                                                defaultTheme="system"
+                                                enableSystem
+                                                disableTransitionOnChange
+                                        >
+                                                <>
+                                                        <header>
+                                                                <Navbar />
+                                                        </header>
+                                                        {children}
 
-                                                <footer className="border-t border-dashed py-6">
-                                                        <div className="container mx-auto text-sm text-muted-foreground text-center">
-                                                                &copy; {new Date().getFullYear()} Store. All rights
-                                                                reserved.
-                                                        </div>
-                                                </footer>
-                                        </>
-                                </ThemeProvider>
+                                                        <footer className="border-t border-dashed py-6">
+                                                                <div className="container mx-auto text-sm text-muted-foreground text-center">
+                                                                        &copy; {new Date().getFullYear()} Store. All
+                                                                        rights reserved.
+                                                                </div>
+                                                        </footer>
+                                                </>
+                                        </ThemeProvider>
+                                </SessionProvider>
                         </body>
                 </html>
         );
