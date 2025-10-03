@@ -4,17 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RegisterUser } from "@/lib/actions/auth";
 import { signUpSchema, SignUpSchemaType } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function SignUpPage() {
+        const [error, setError] = useState<string | null>(null);
         const [showPassword, setShowPassword] = useState(false);
         const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+        const router = useRouter();
         const form = useForm<SignUpSchemaType>({
                 resolver: zodResolver(signUpSchema),
                 defaultValues: {
@@ -26,7 +29,21 @@ export default function SignUpPage() {
         });
 
         const onSubmit = async (data: SignUpSchemaType) => {
-                console.log(data);
+                setError(null);
+                form.clearErrors();
+                try {
+                        const result = await RegisterUser(data);
+
+                        if (result?.success) {
+                                router.push("/auth/signin");
+                        } else {
+                                setError(result?.error || "An error occurred while creating your account");
+                                return;
+                        }
+                } catch (error) {
+                        console.error("Registration Error", error);
+                        setError("An error occurred while creating your account");
+                }
         };
 
         return (
@@ -44,6 +61,11 @@ export default function SignUpPage() {
                                                 </Link>
                                         </CardDescription>
                                 </CardHeader>
+                                {error && (
+                                        <CardContent>
+                                                <p className="mb-4 text-sm text-destructive ">{error}</p>
+                                        </CardContent>
+                                )}
                                 <CardContent>
                                         <Form {...form}>
                                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -156,7 +178,11 @@ export default function SignUpPage() {
                                                                 )}
                                                         />
 
-                                                        <Button type="submit" className="w-full">
+                                                        <Button
+                                                                type="submit"
+                                                                className="w-full"
+                                                                disabled={form.formState.isSubmitting}
+                                                        >
                                                                 Sign Up
                                                         </Button>
                                                 </form>

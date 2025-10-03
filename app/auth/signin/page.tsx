@@ -29,7 +29,7 @@ export default function SignInPage() {
 
         const onSubmit = async (data: SignInSchemaType): Promise<void> => {
                 setError(null);
-
+                form.clearErrors();
                 try {
                         const result = await signIn("credentials", {
                                 email: data.email,
@@ -157,7 +157,11 @@ export default function SignInPage() {
                                                                 )}
                                                         />
 
-                                                        <Button type="submit" className="w-full">
+                                                        <Button
+                                                                type="submit"
+                                                                className="w-full"
+                                                                disabled={form.formState.isSubmitting}
+                                                        >
                                                                 Sign In
                                                         </Button>
                                                 </form>
