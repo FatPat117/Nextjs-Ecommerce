@@ -1,93 +1,125 @@
-import { Product } from "@/app/generated/prisma";
+import { User } from "@/app/generated/prisma";
+import { hashPassword } from "@/lib/auth";
 import db from "@/lib/db";
 async function seed() {
-        await db.product.deleteMany();
-        await db.category.deleteMany();
+        // await db.product.deleteMany();
+        // await db.category.deleteMany();
+        await db.user.deleteMany();
 
-        const electronics = await db.category.create({
-                data: {
-                        name: "Electronics",
-                        slug: "electronics",
-                },
-        });
+        // const electronics = await db.category.create({
+        //         data: {
+        //                 name: "Electronics",
+        //                 slug: "electronics",
+        //         },
+        // });
 
-        const clothing = await db.category.create({
-                data: {
-                        name: "Clothing",
-                        slug: "clothing",
-                },
-        });
+        // const clothing = await db.category.create({
+        //         data: {
+        //                 name: "Clothing",
+        //                 slug: "clothing",
+        //         },
+        // });
 
-        const home = await db.category.create({
-                data: {
-                        name: "Home",
-                        slug: "home",
-                },
-        });
+        // const home = await db.category.create({
+        //         data: {
+        //                 name: "Home",
+        //                 slug: "home",
+        //         },
+        // });
 
-        const sports = await db.category.create({
-                data: {
-                        name: "Sports",
-                        slug: "sports",
-                },
-        });
+        // const sports = await db.category.create({
+        //         data: {
+        //                 name: "Sports",
+        //                 slug: "sports",
+        //         },
+        // });
 
-        const products: Omit<Product, "createdAt" | "updatedAt">[] = [
+        // const products: Omit<Product, "createdAt" | "updatedAt">[] = [
+        //         {
+        //                 id: "1",
+        //                 name: "Wireless Headphones",
+        //                 slug: "wireless-headphones",
+        //                 description: "Premium noise-cancelling wireless headphones with long battery life.",
+        //                 price: 199.99,
+        //                 image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+        //                 categoryId: electronics.id,
+        //                 inventory: 12,
+        //         },
+        //         {
+        //                 id: "2",
+        //                 name: "Smart Watch",
+        //                 slug: "smart-watch",
+        //                 description: "Fitness tracker with heart rate monitoring and sleep analysis.",
+        //                 price: 149.99,
+        //                 image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+        //                 categoryId: electronics.id,
+        //                 inventory: 15,
+        //         },
+        //         {
+        //                 id: "3",
+        //                 name: "Running Shoes",
+        //                 slug: "running-shoes",
+        //                 description: "Lightweight running shoes with responsive cushioning.",
+        //                 price: 89.99,
+        //                 image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+        //                 categoryId: sports.id,
+        //                 inventory: 10,
+        //         },
+        //         {
+        //                 id: "4",
+        //                 name: "Ceramic Mug",
+        //                 slug: "ceramic-mug",
+        //                 description: "Handcrafted ceramic mug with minimalist design.",
+        //                 price: 24.99,
+        //                 image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d",
+        //                 categoryId: home.id,
+        //                 inventory: 20,
+        //         },
+        //         {
+        //                 id: "5",
+        //                 name: "Leather Backpack",
+        //                 slug: "leather-backpack",
+        //                 description: "Durable leather backpack with multiple compartments.",
+        //                 price: 24.99,
+        //                 image: "https://images.unsplash.com/photo-1491637639811-60e2756cc1c7",
+        //                 categoryId: clothing.id,
+        //                 inventory: 0,
+        //         },
+        // ];
+
+        // await db.product.createMany({
+        //         data: products,
+        // });
+
+        const users: User[] = [
                 {
                         id: "1",
-                        name: "Wireless Headphones",
-                        slug: "wireless-headphones",
-                        description: "Premium noise-cancelling wireless headphones with long battery life.",
-                        price: 199.99,
-                        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
-                        categoryId: electronics.id,
-                        inventory: 12,
+                        email: "admin@example.com",
+                        password: "password123",
+                        name: "Admin User",
+                        role: "admin",
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
                 },
                 {
                         id: "2",
-                        name: "Smart Watch",
-                        slug: "smart-watch",
-                        description: "Fitness tracker with heart rate monitoring and sleep analysis.",
-                        price: 149.99,
-                        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-                        categoryId: electronics.id,
-                        inventory: 15,
-                },
-                {
-                        id: "3",
-                        name: "Running Shoes",
-                        slug: "running-shoes",
-                        description: "Lightweight running shoes with responsive cushioning.",
-                        price: 89.99,
-                        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-                        categoryId: sports.id,
-                        inventory: 10,
-                },
-                {
-                        id: "4",
-                        name: "Ceramic Mug",
-                        slug: "ceramic-mug",
-                        description: "Handcrafted ceramic mug with minimalist design.",
-                        price: 24.99,
-                        image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d",
-                        categoryId: home.id,
-                        inventory: 20,
-                },
-                {
-                        id: "5",
-                        name: "Leather Backpack",
-                        slug: "leather-backpack",
-                        description: "Durable leather backpack with multiple compartments.",
-                        price: 24.99,
-                        image: "https://images.unsplash.com/photo-1491637639811-60e2756cc1c7",
-                        categoryId: clothing.id,
-                        inventory: 0,
+                        email: "user@example.com",
+                        password: "password456",
+                        name: "Regular User",
+                        role: "user",
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
                 },
         ];
-
-        await db.product.createMany({
-                data: products,
-        });
+        for (const user of users) {
+                const hashedPassword = await hashPassword(user.password);
+                await db.user.create({
+                        data: {
+                                ...user,
+                                password: hashedPassword,
+                        },
+                });
+        }
 }
 
 seed()
