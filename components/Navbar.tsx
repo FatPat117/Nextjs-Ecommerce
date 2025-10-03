@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import AuthStatus from "./AuthStatus";
 import CartIndicator from "./CartIndicator";
 import CartIndicatorSkeleton from "./CartIndicatorSkeleton";
 import MobileNavbar from "./MobileNavbar";
@@ -54,6 +55,7 @@ const Navbar = () => {
                                                 </Link>
                                         </Button>
 
+                                        <AuthStatus />
                                         {/* Cart */}
                                         <Suspense fallback={<CartIndicatorSkeleton />}>
                                                 {" "}

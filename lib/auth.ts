@@ -3,13 +3,13 @@ import NextAuth, { Session, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import db from "./db";
-import { signInSchema } from "./schemas";
+import { signInSchema, signUpSchema, SignUpSchemaType } from "./schemas";
 
 declare module "next-auth" {
         interface User {
                 id: string;
                 role: string;
-                name: string;
+                name: string | null;
                 email: string;
         }
 }
@@ -67,19 +67,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         callbacks: {
                 async jwt({ token, user }: { token: JWT; user: User }) {
                         if (user) {
-                                token.id = user.id;
-                                token.role = user.role;
-                                token.name = user.name;
-                                token.email = user.email;
+                                token.user = {
+                                        id: user.id,
+                                        role: user.role,
+                                        name: user.name || "",
+                                        email: user.email,
+                                };
                         }
                         return token;
                 },
                 async session({ session, token }: { session: Session; token: JWT }) {
                         if (session.user) {
-                                session.user.id = token.id;
-                                session.user.role = token.role;
-                                session.user.name = token.name;
-                                session.user.email = token.email;
+                                session.user.id = token.user.id;
+                                session.user.role = token.user.role || "";
+                                session.user.name = token.user.name || "";
+                                session.user.email = token.user.email || "";
                         }
 
                         return session;
@@ -96,4 +98,52 @@ export async function hashPassword(password: string) {
 
 export async function verifyPassword(password: string, hashedPassword: string) {
         return await bcrypt.compare(password, hashedPassword);
+}
+
+export async function RegisterUser(user: SignUpSchemaType) {
+        const parseData = await signUpSchema.safeParse(user);
+        if (!parseData.success) {
+                return {
+                        success: false,
+                        error: "Invalid data provided",
+                        invalidFields: parseData.error.flatten().fieldErrors,
+                };
+        }
+        const { name, email, password } = parseData.data;
+        try {
+                const existedUser = await db.user.findUnique({
+                        where: {
+                                email: email,
+                        },
+                });
+                if (existedUser) {
+                        return { success: false, error: "User already exists" };
+                }
+                const hashedPassword = await hashPassword(password);
+                const newUser = await db.user.create({
+                        data: {
+                                name: name,
+                                email: email,
+                                password: hashedPassword,
+                                role: "user",
+                        },
+                });
+
+                const userWithoutPassword = {
+                        id: newUser.id,
+                        name: newUser.name,
+                        email: newUser.email,
+                        role: newUser.role,
+                };
+                return {
+                        success: true,
+                        user: userWithoutPassword,
+                };
+        } catch (error) {
+                console.error("RegisterUser error", error);
+                return {
+                        success: false,
+                        error: "Could not create account. Please try again later.",
+                };
+        }
 }

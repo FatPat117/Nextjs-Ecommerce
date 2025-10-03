@@ -11,13 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signInSchema, SignInSchema } from "@/lib/schemas";
+import { signInSchema, SignInSchemaType } from "@/lib/schemas";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+        const router = useRouter();
         const [error, setError] = useState<string | null>(null);
         const [showPassword, setShowPassword] = useState(false);
-        const { data: session } = useSession();
-        const form = useForm<SignInSchema>({
+        const { data: session, update: updateSession } = useSession();
+        const form = useForm<SignInSchemaType>({
                 resolver: zodResolver(signInSchema),
                 defaultValues: {
                         email: "",
@@ -25,7 +27,7 @@ export default function SignInPage() {
                 },
         });
 
-        const onSubmit = async (data: SignInSchema) => {
+        const onSubmit = async (data: SignInSchemaType): Promise<void> => {
                 setError(null);
 
                 try {
@@ -40,6 +42,9 @@ export default function SignInPage() {
                                 } else {
                                         setError("An error occurred");
                                 }
+                        } else {
+                                await updateSession();
+                                router.push("/");
                         }
                 } catch (_error) {
                         setError("An error occurred");
@@ -151,9 +156,7 @@ export default function SignInPage() {
                                                                         </FormItem>
                                                                 )}
                                                         />
-                                                        {session?.user && (
-                                                                <p>{JSON.stringify(session.user, null, 2)}</p>
-                                                        )}
+
                                                         <Button type="submit" className="w-full">
                                                                 Sign In
                                                         </Button>
