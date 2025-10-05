@@ -3,7 +3,7 @@ import NextAuth, { Session, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import db from "./db";
-import { signInSchema, signUpSchema, SignUpSchemaType } from "./schemas";
+import { signInSchema } from "./schemas";
 
 declare module "next-auth" {
         interface User {
