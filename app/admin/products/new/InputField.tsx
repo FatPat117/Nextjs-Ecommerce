@@ -2,11 +2,12 @@ export default function InputField({
         label,
         id,
         name,
-        type,
+        type = "text",
         required,
         step,
         placeholder,
         error,
+        defaultValue,
 }: {
         label: string;
         id: string;
@@ -16,6 +17,7 @@ export default function InputField({
         step?: string;
         placeholder?: string;
         error?: string[];
+        defaultValue?: string | number;
 }) {
         return (
                 <div>
@@ -29,6 +31,7 @@ export default function InputField({
                                 step={step}
                                 required={required}
                                 placeholder={placeholder}
+                                defaultValue={defaultValue}
                                 className="block w-full rounded-xl border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-100 transition text-sm p-2.5"
                         />
                         {error && <p className="mt-1 text-sm text-red-600">{error.join(", ")}</p>}

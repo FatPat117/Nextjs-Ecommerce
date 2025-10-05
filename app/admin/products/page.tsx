@@ -41,9 +41,12 @@ export default async function ProductsPage() {
                                                                         <td className="p-3">{product.inventory}</td>
                                                                         <td className="p-3">
                                                                                 {/* Chúng ta sẽ thêm nút Edit/Delete ở đây sau */}
-                                                                                <button className="text-blue-500 hover:underline">
+                                                                                <Link
+                                                                                        href={`/admin/products/${product.id}/edit`}
+                                                                                        className="text-blue-500 hover:underline"
+                                                                                >
                                                                                         Edit
-                                                                                </button>
+                                                                                </Link>
                                                                         </td>
                                                                 </tr>
                                                         ))

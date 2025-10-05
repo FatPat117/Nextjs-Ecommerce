@@ -5,8 +5,10 @@ import { Prisma } from "@/app/generated/prisma";
 import db from "@/lib/db";
 import { UploadApiResponse } from "cloudinary";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import cloudinary from "../cloudinary";
+export type ProductWithCategory = Prisma.ProductGetPayload<{ include: { category: true } }>;
 
 type ProductType = Prisma.ProductGetPayload<{
         include: {
@@ -87,7 +89,7 @@ export async function addProduct(prevState: any, formData: FormData) {
         }
 
         revalidatePath("/admin/products");
-        return { success: true, message: "Product added successfully!", errors: {} };
+        redirect("/admin/products");
 }
 
 export async function getProducts(): Promise<ProductType[]> {
@@ -115,4 +117,95 @@ export async function getCategories() {
         } catch (error) {
                 return [];
         }
+}
+
+// =================Update Product ===================
+const UpdateProductSchema = z.object({
+        name: z.string().min(1, "Name is required").optional(),
+        description: z.string().optional(),
+        price: z.coerce.number().min(0, "Price must be a positive number").optional(),
+        inventory: z.coerce.number().int("Inventory must be a whole number").optional(),
+        categoryId: z.string().min(1, "Category is required").optional(),
+});
+
+// Action để TÌM MỘT SẢN PHẨM theo ID
+export async function getProductById(productId: string): Promise<ProductWithCategory | null> {
+        try {
+                const product = await db.product.findUnique({
+                        where: { id: productId },
+                        include: {
+                                category: true,
+                        },
+                });
+                return product;
+        } catch (error) {
+                console.error("Database Error:", error);
+                return null;
+        }
+}
+
+// Action để CẬP NHẬT sản phẩm
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function updateProduct(productId: string, prevState: any, formData: FormData) {
+        const imageFile = formData.get("image") as File;
+        const { image, ...fields } = Object.fromEntries(formData.entries());
+        const validatedFields = UpdateProductSchema.safeParse(fields);
+
+        if (!validatedFields.success) {
+                return {
+                        message: "Please review the form and correct any errors.",
+                        errors: validatedFields.error.flatten().fieldErrors,
+                        success: false,
+                };
+        }
+
+        let imageUrl: string | undefined = undefined;
+
+        // Nếu người dùng upload ảnh mới thì mới xử lý
+        if (imageFile && imageFile.size > 0) {
+                try {
+                        const imageBuffer = await imageFile.arrayBuffer();
+                        const buffer = new Uint8Array(imageBuffer);
+
+                        const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
+                                cloudinary.uploader
+                                        .upload_stream(
+                                                {
+                                                        folder: "products",
+                                                        tags: ["nextjs-ecommerce-products"],
+                                                },
+                                                (error, result) => {
+                                                        if (error || !result) return reject(error);
+                                                        resolve(result);
+                                                }
+                                        )
+                                        .end(buffer);
+                        });
+
+                        imageUrl = uploadResult.secure_url;
+                } catch (error) {
+                        console.error("Failed to upload image:", error);
+                        return { message: "Failed to upload image.", success: false, errors: {} };
+                }
+        }
+
+        try {
+                const dataToUpdate = {
+                        ...validatedFields.data,
+                        slug: validatedFields.data.name
+                                ? validatedFields.data.name.toLowerCase().replace(/\s+/g, "-")
+                                : undefined,
+                        image: imageUrl, // Chỉ cập nhật ảnh nếu có ảnh mới
+                };
+
+                await db.product.update({
+                        where: { id: productId },
+                        data: dataToUpdate,
+                });
+        } catch (error) {
+                return { message: "Database Error: Failed to Update Product.", errors: {}, success: false };
+        }
+
+        revalidatePath("/admin/products");
+        redirect("/admin/products");
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { Category } from "@/app/generated/prisma";
-import { addProduct } from "@/lib/actions/products";
-import { useEffect } from "react";
-import { useFormState } from "react-dom";
+import { addProduct, ProductWithCategory, updateProduct } from "@/lib/actions/products";
+import Image from "next/image";
+import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
@@ -13,24 +13,30 @@ type ProductFormState = {
         errors: Partial<Record<"name" | "price" | "inventory" | "categoryId" | "description" | "image", string[]>>;
 };
 
-export function ProductForm({ categories }: { categories: Category[] }) {
+export function ProductForm({ categories, product }: { categories: Category[]; product?: ProductWithCategory }) {
+        // Quyết định sẽ gọi action nào: nếu có `product` thì gọi `update`, không thì gọi `add`
+        const actionToCall = product ? updateProduct.bind(null, product.id) : addProduct;
         const initialState: ProductFormState = { errors: {}, message: null as string | null, success: false };
-        const [state, dispatch] = useFormState<ProductFormState, FormData>(addProduct, initialState);
+        const [state, dispatch] = useActionState<ProductFormState, FormData>(actionToCall, initialState);
+
+        const formRef = useRef<HTMLFormElement>(null);
 
         useEffect(() => {
-                // Nếu có lỗi (nhưng không phải là thành công)
                 if (state.message && !state.success) {
                         toast.error(state.message);
                 }
-
-                // Nếu thành công
                 if (state.success) {
                         toast.success(state.message);
+
+                        if (!product) {
+                                formRef.current?.reset();
+                        }
                 }
-        }, [state]);
+        }, [state, product]);
 
         return (
                 <form
+                        ref={formRef}
                         action={dispatch}
                         className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md border border-gray-200 p-8 space-y-8"
                 >
@@ -38,7 +44,9 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                         <div className="border-b pb-4 mb-6">
                                 <h1 className="text-2xl font-semibold text-gray-800">🛍️ Add New Product</h1>
                                 <p className="text-sm text-gray-500 mt-1">
-                                        Điền thông tin sản phẩm để thêm vào cửa hàng của bạn.
+                                        {product
+                                                ? "Cập nhật thông tin sản phẩm."
+                                                : "Điền thông tin sản phẩm để thêm vào cửa hàng của bạn."}
                                 </p>
                         </div>
 
@@ -52,6 +60,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         type="text"
                                         required
                                         error={state.errors.name || []}
+                                        defaultValue={product?.name || ""}
                                 />
 
                                 {/* Price */}
@@ -63,6 +72,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         step="0.01"
                                         required
                                         error={state.errors?.price || []}
+                                        defaultValue={product?.price}
                                 />
 
                                 {/* Inventory */}
@@ -73,6 +83,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         type="number"
                                         required
                                         error={state.errors?.inventory || []}
+                                        defaultValue={product?.inventory}
                                 />
 
                                 {/* Image URL */}
@@ -84,6 +95,18 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         placeholder="https://example.com/product.jpg"
                                         error={state.errors?.image}
                                 />
+                                {product?.image && (
+                                        <div className="mt-2">
+                                                <p className="text-sm text-gray-500 mb-1">Current image:</p>
+                                                <Image
+                                                        width={500}
+                                                        height={500}
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="w-32 h-32 object-cover rounded-lg border"
+                                                />
+                                        </div>
+                                )}
                         </div>
 
                         {/* Description */}
@@ -97,6 +120,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         rows={4}
                                         placeholder="Mô tả chi tiết sản phẩm..."
                                         className="block w-full rounded-xl border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-100 transition text-sm p-3"
+                                        defaultValue={product?.description || ""}
                                 />
                         </div>
 
@@ -110,8 +134,13 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         name="categoryId"
                                         className="block w-full rounded-xl border border-gray-300 py-2 px-3 text-sm focus:border-blue-500 focus:ring focus:ring-blue-100 transition"
                                         required
+                                        defaultValue={product?.categoryId || ""}
                                 >
-                                        <option value="">Select a category</option>
+                                        {product ? (
+                                                <option value={product.categoryId}>{product?.category?.name}</option>
+                                        ) : (
+                                                <option value="">Select a category</option>
+                                        )}
                                         {categories.map((category) => (
                                                 <option key={category.id} value={category.id}>
                                                         {category.name}
