@@ -1,11 +1,12 @@
 // lib/actions/product.ts
 "use server";
 
+import { Prisma } from "@/app/generated/prisma";
 import db from "@/lib/db";
+import { UploadApiResponse } from "cloudinary";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-import { Prisma } from "@/app/generated/prisma";
+import cloudinary from "../cloudinary";
 
 type ProductType = Prisma.ProductGetPayload<{
         include: {
@@ -26,34 +27,67 @@ const ProductSchema = z.object({
 // Action để thêm sản phẩm
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addProduct(prevState: any, formData: FormData) {
-        const validatedFields = ProductSchema.safeParse(Object.fromEntries(formData.entries()));
+        const imageFile = formData.get("image") as File;
+        const { image, ...fields } = Object.fromEntries(formData.entries());
 
+        const validatedFields = ProductSchema.safeParse(fields);
         if (!validatedFields.success) {
                 return {
+                        message: "Please review the form and correct any errors.",
                         errors: validatedFields.error.flatten().fieldErrors,
+                        success: false,
                 };
+        }
+
+        let imageUrl = "";
+
+        if (imageFile && imageFile.size > 0) {
+                try {
+                        const imageBuffer = await imageFile.arrayBuffer();
+                        const buffer = new Uint8Array(imageBuffer);
+
+                        const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
+                                cloudinary.uploader
+                                        .upload_stream(
+                                                {
+                                                        folder: "products",
+                                                        tags: ["nextjs-ecommerce-products"],
+                                                },
+                                                (error, result) => {
+                                                        if (error || !result) return reject(error);
+                                                        resolve(result);
+                                                }
+                                        )
+                                        .end(buffer);
+                        });
+
+                        imageUrl = uploadResult.secure_url;
+                } catch (error) {
+                        console.error("Failed to upload image:", error);
+                        return { message: "Failed to upload image.", success: false, errors: {} };
+                }
         }
 
         try {
                 await db.product.create({
                         data: {
                                 ...validatedFields.data,
-                                // Tạo slug từ tên sản phẩm
-                                slug: validatedFields.data.name.toLowerCase().replace(/\s+/g, "-"),
+                                image: imageUrl || null,
+                                slug: validatedFields.data.name
+                                        .toLowerCase()
+                                        .trim()
+                                        .replace(/[^\w\s-]/g, "")
+                                        .replace(/\s+/g, "-"),
                         },
                 });
-        } catch (error) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
                 console.error("Database Error:", error);
-                return {
-                        message: "Database Error: Failed to Create Product.",
-                };
+                return { message: error.message || "Failed to create product.", success: false, errors: {} };
         }
 
-        // Revalidate lại trang danh sách sản phẩm để hiển thị sản phẩm mới
         revalidatePath("/admin/products");
-        // Chuyển hướng về trang danh sách sản phẩm
-
-        return { success: true, message: "Product added successfully!" };
+        return { success: true, message: "Product added successfully!", errors: {} };
 }
 
 export async function getProducts(): Promise<ProductType[]> {

@@ -2,12 +2,32 @@
 
 import { Category } from "@/app/generated/prisma";
 import { addProduct } from "@/lib/actions/products";
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
+import { toast } from "sonner";
+import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
+type ProductFormState = {
+        message: string | null;
+        success: boolean;
+        errors: Partial<Record<"name" | "price" | "inventory" | "categoryId" | "description" | "image", string[]>>;
+};
 
 export function ProductForm({ categories }: { categories: Category[] }) {
-        const initialState = { errors: {}, message: undefined };
-        const [state, dispatch] = useFormState(addProduct, initialState);
+        const initialState: ProductFormState = { errors: {}, message: null as string | null, success: false };
+        const [state, dispatch] = useFormState<ProductFormState, FormData>(addProduct, initialState);
+
+        useEffect(() => {
+                // Nếu có lỗi (nhưng không phải là thành công)
+                if (state.message && !state.success) {
+                        toast.error(state.message);
+                }
+
+                // Nếu thành công
+                if (state.success) {
+                        toast.success(state.message);
+                }
+        }, [state]);
 
         return (
                 <form
@@ -31,7 +51,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         name="name"
                                         type="text"
                                         required
-                                        error={state.errors?.name}
+                                        error={state.errors.name || []}
                                 />
 
                                 {/* Price */}
@@ -42,7 +62,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         type="number"
                                         step="0.01"
                                         required
-                                        error={state.errors?.price}
+                                        error={state.errors?.price || []}
                                 />
 
                                 {/* Inventory */}
@@ -52,7 +72,7 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                         name="inventory"
                                         type="number"
                                         required
-                                        error={state.errors?.inventory}
+                                        error={state.errors?.inventory || []}
                                 />
 
                                 {/* Image URL */}
@@ -110,43 +130,5 @@ export function ProductForm({ categories }: { categories: Category[] }) {
                                 <SubmitButton />
                         </div>
                 </form>
-        );
-}
-
-function InputField({
-        label,
-        id,
-        name,
-        type,
-        required,
-        step,
-        placeholder,
-        error,
-}: {
-        label: string;
-        id: string;
-        name: string;
-        type: string;
-        required?: boolean;
-        step?: string;
-        placeholder?: string;
-        error?: string[];
-}) {
-        return (
-                <div>
-                        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
-                                {label} {required && <span className="text-red-500">*</span>}
-                        </label>
-                        <input
-                                type={type}
-                                id={id}
-                                name={name}
-                                step={step}
-                                required={required}
-                                placeholder={placeholder}
-                                className="block w-full rounded-xl border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-100 transition text-sm p-2.5"
-                        />
-                        {error && <p className="mt-1 text-sm text-red-600">{error.join(", ")}</p>}
-                </div>
         );
 }
