@@ -1,9 +1,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
 import AuthStatus from "./AuthStatus";
 import CartIndicator from "./CartIndicator";
-import CartIndicatorSkeleton from "./CartIndicatorSkeleton";
 import MobileNavbar from "./MobileNavbar";
 import { ModeToggle } from "./mode-toggle";
 import SearchInput from "./SearchInput";
@@ -57,10 +55,8 @@ const Navbar = () => {
 
                                         <AuthStatus />
                                         {/* Cart */}
-                                        <Suspense fallback={<CartIndicatorSkeleton />}>
-                                                {" "}
-                                                <CartIndicator />
-                                        </Suspense>
+
+                                        <CartIndicator />
 
                                         {/* Theme */}
                                         <ModeToggle />

@@ -1,5 +1,6 @@
 "use client";
 import { CartItemWithProduct, setProductQuantity } from "@/lib/action";
+import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
@@ -11,12 +12,14 @@ interface CartItemProps {
 }
 
 const CartItem = ({ cartItem }: CartItemProps) => {
+        const { revalidateCart } = useCart();
         const [isLoading, setIsLoading] = useState(false);
 
         const handleIncrement = async () => {
                 try {
                         setIsLoading(true);
                         await setProductQuantity({ productId: cartItem.productId, quantity: cartItem.quantity + 1 });
+                        revalidateCart();
                 } catch (error) {
                         console.error("Failed to increment product quantity", error);
                 } finally {
@@ -28,6 +31,7 @@ const CartItem = ({ cartItem }: CartItemProps) => {
                 try {
                         setIsLoading(true);
                         await setProductQuantity({ productId: cartItem.productId, quantity: cartItem.quantity - 1 });
+                        revalidateCart();
                 } catch (error) {
                         console.error("Failed to decrement product quantity", error);
                 } finally {
@@ -39,6 +43,7 @@ const CartItem = ({ cartItem }: CartItemProps) => {
                 try {
                         setIsLoading(true);
                         await setProductQuantity({ productId: cartItem.productId, quantity: 0 });
+                        revalidateCart();
                 } catch (error) {
                         console.error("Failed to remove product", error);
                 } finally {

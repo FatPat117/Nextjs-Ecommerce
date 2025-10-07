@@ -11,6 +11,7 @@ const CartPage = async () => {
         const cart = await getCart();
         const session = await auth();
         const userId = session?.user?.id;
+
         const handleCheckout = async () => {
                 "use server";
                 let result: ProcessCheckoutResponse | undefined | null = null;
