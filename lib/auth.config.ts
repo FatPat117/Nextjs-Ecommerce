@@ -6,6 +6,7 @@ import type { NextAuthConfig } from "next-auth";
 // để có thể truy cập `role` và `id`
 
 export const authConfig = {
+        trustHost: true,
         providers: [],
 
         // Trang đăng nhập tùy chỉnh

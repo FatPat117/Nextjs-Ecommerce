@@ -1,16 +1,3 @@
-import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import { handlers } from "@/lib/auth";
 
-export const authOptions = {
-        providers: [
-                GithubProvider({
-                        clientId: process.env.GITHUB_ID!,
-                        clientSecret: process.env.GITHUB_SECRET!,
-                }),
-        ],
-        trustHost: true, // chỉ dev / localhost
-        // các config khác...
-};
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST }; // App Router
+export const { GET, POST } = handlers;

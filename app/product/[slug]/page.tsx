@@ -33,7 +33,6 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
         if (!product) {
                 notFound();
         }
-        console.log(product);
 
         const breadcrumbs = [
                 {

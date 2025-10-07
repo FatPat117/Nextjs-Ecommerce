@@ -22,7 +22,7 @@ const CartPage = async () => {
                 } catch (error) {
                         console.error("checkout error", error);
                 }
-                console.log(result);
+
                 if (result) {
                         redirect(result.sessionUrl);
                 }
