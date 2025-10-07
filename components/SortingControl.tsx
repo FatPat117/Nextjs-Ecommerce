@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const SortingControl = () => {
-        const params = useParams();
         const pathname = usePathname();
         const searchParams = useSearchParams();
         const currentSort = searchParams.get("sort");
-        const slug = params.slug;
 
         const createSortUrl = (sortValue: string | null) => {
                 const params = new URLSearchParams(searchParams);

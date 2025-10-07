@@ -18,7 +18,7 @@ export default function SignInPage() {
         const router = useRouter();
         const [error, setError] = useState<string | null>(null);
         const [showPassword, setShowPassword] = useState(false);
-        const { data: session, update: updateSession } = useSession();
+        const { update: updateSession } = useSession();
         const form = useForm<SignInSchemaType>({
                 resolver: zodResolver(signInSchema),
                 defaultValues: {

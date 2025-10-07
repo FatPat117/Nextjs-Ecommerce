@@ -27,10 +27,10 @@ const ProductSchema = z.object({
 });
 
 // Action để thêm sản phẩm
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function addProduct(prevState: any, formData: FormData) {
         const imageFile = formData.get("image") as File;
-        const { image, ...fields } = Object.fromEntries(formData.entries());
+        const { ...fields } = Object.fromEntries(formData.entries());
 
         const validatedFields = ProductSchema.safeParse(fields);
         if (!validatedFields.success) {
@@ -82,7 +82,7 @@ export async function addProduct(prevState: any, formData: FormData) {
                                         .replace(/\s+/g, "-"),
                         },
                 });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
         } catch (error: any) {
                 console.error("Database Error:", error);
                 return { message: error.message || "Failed to create product.", success: false, errors: {} };
@@ -115,6 +115,7 @@ export async function getCategories() {
                 const categories = await db.category.findMany();
                 return categories;
         } catch (error) {
+                console.error("Get Categories Error:", error);
                 return [];
         }
 }
@@ -145,10 +146,10 @@ export async function getProductById(productId: string): Promise<ProductWithCate
 }
 
 // Action để CẬP NHẬT sản phẩm
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function updateProduct(productId: string, prevState: any, formData: FormData) {
         const imageFile = formData.get("image") as File;
-        const { image, ...fields } = Object.fromEntries(formData.entries());
+        const { ...fields } = Object.fromEntries(formData.entries());
         const validatedFields = UpdateProductSchema.safeParse(fields);
 
         if (!validatedFields.success) {
@@ -203,6 +204,7 @@ export async function updateProduct(productId: string, prevState: any, formData:
                         data: dataToUpdate,
                 });
         } catch (error) {
+                console.error("Database Error: Failed to Update Product:", error);
                 return { message: "Database Error: Failed to Update Product.", errors: {}, success: false };
         }
 

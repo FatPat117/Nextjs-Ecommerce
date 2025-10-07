@@ -57,7 +57,7 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
                         sessionId: session.id,
                         sessionUrl: session.url,
                 };
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
         } catch (error: any) {
                 if (error instanceof Stripe.errors.StripeError) {
                         console.error("Stripe API Error:", error.message, error);
