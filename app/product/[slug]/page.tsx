@@ -50,6 +50,25 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
                         active: true,
                 },
         ];
+
+        const jsonLd = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: product.name,
+                description: product.description,
+                image: product.image,
+                brand: product.category?.name,
+                price: product.price,
+                offers: {
+                        "@type": "Offer",
+                        price: product.price,
+                        priceCurrency: "USD",
+                        availability: product.inventory > 0 ? "InStock" : "OutOfStock",
+                        seller: {
+                                "@type": "Organization",
+                        },
+                },
+        };
         return (
                 <div className="container mx-auto py-4">
                         <Breadcrumbs items={breadcrumbs} />
@@ -119,6 +138,10 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
                                         </div>
                                 </CardContent>
                         </Card>
+                        <script
+                                type="application/ld+json"
+                                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                        />
                 </div>
         );
 };

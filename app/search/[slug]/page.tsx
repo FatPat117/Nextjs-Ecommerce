@@ -5,6 +5,28 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ProductsSkeleton from "../../ProductsSkeleton";
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+        const { slug } = await params;
+        const category = await db.category.findUnique({
+                where: { slug },
+                select: {
+                        name: true,
+                        slug: true,
+                },
+        });
+
+        if (!category) {
+                return {};
+        }
+
+        return {
+                title: category?.name,
+                openGraph: {
+                        title: category?.name,
+                },
+        };
+}
+
 type ParamsProps = {
         params: Promise<{ slug: string }>;
         searchParams?: Promise<{ sort?: string | null }>;

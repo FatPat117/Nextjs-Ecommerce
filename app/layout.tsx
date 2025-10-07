@@ -3,9 +3,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { Suspense } from "react";
 
 const geistSans = Geist({
         variable: "--font-geist-sans",
@@ -18,8 +18,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-        title: "E-commerce-store",
+        title: {
+                default: "E-Commerce Store",
+                template: "%s | E-Commerce Store",
+        },
         description: "A simple e-commerce store built with Next.js, Prisma, and Tailwind CSS",
+        openGraph: {
+                title: "E-Commerce Store",
+                description: "A simple e-commerce store built with Next.js, Prisma, and Tailwind CSS",
+                url: process.env.NEXT_PUBLIC_URL,
+                siteName: "E-Commerce Store",
+        },
 };
 
 export default function RootLayout({
