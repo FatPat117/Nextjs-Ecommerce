@@ -8,7 +8,7 @@ import {
         PaginationNext,
         PaginationPrevious,
 } from "@/components/ui/pagination";
-import db from "@/lib/db";
+import { getProductsCountCached } from "@/lib/action";
 import { Suspense } from "react";
 import ProductsSkeleton from "./ProductsSkeleton";
 const pageSize = 3;
@@ -17,7 +17,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string
         const { page } = await searchParams;
 
         const pageNumber = Number(page) || 1;
-        const totalProducts = await db.product.count();
+        const totalProducts = await getProductsCountCached();
         const totalPages = Math.ceil(totalProducts / pageSize);
 
         return (

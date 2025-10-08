@@ -97,6 +97,17 @@ export async function getProductsCached({ query, slug, sort, page = 1, pageSize 
         return cachedFn();
 }
 
+export async function getProductsCountCached() {
+        const cachedFn = unstable_cache(
+                () => {
+                        return db.product.count();
+                },
+                ["products-count"],
+                { tags: ["products"], revalidate: 3600 }
+        );
+        return cachedFn();
+}
+
 async function findCartFromCookies(): Promise<CartWithProduct | null> {
         const cartId = (await cookies()).get("cartId")?.value;
         if (!cartId) return null;
