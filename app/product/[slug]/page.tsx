@@ -4,9 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProductBySlug } from "@/lib/action";
+import db from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
+export const validate = 60 * 60;
+
+export async function generateStaticParams() {
+        const products = await db.product.findMany();
+        return products.map((product) => ({ slug: product.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
         const { slug } = await params;
