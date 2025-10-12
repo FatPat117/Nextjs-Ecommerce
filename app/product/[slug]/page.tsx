@@ -16,8 +16,8 @@ export async function generateStaticParams() {
         return products.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-        const { slug } = await params;
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+        const { slug } = params;
         const product = await getProductBySlug(slug);
 
         if (!product) {
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         };
 }
 
-const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-        const { slug } = await params;
+const ProductPage = async ({ params }: { params: { slug: string } }) => {
+        const { slug } = params;
         const product = await getProductBySlug(slug);
         if (!product) {
                 notFound();

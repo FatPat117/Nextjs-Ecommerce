@@ -6,11 +6,11 @@ import OrderItem from "./OrderItem";
 import OrderSummary from "./OrderSummary";
 
 interface OrderPageProps {
-        params: Promise<{ orderId: string }>;
+        params: { orderId: string };
 }
 
 const OrderDetailPage = async ({ params }: OrderPageProps) => {
-        const { orderId } = await params;
+        const { orderId } = params;
         const order = await db.order.findUnique({
                 where: {
                         id: orderId,

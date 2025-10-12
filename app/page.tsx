@@ -13,8 +13,8 @@ import { Suspense } from "react";
 import ProductsSkeleton from "./ProductsSkeleton";
 const pageSize = 3;
 
-const HomePage = async ({ searchParams }: { searchParams: Promise<{ page: string }> }) => {
-        const { page } = await searchParams;
+const HomePage = async ({ searchParams }: { searchParams: { page: string } }) => {
+        const { page } = searchParams;
 
         const pageNumber = Number(page) || 1;
         const totalProducts = await db.product.count();

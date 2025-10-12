@@ -4,11 +4,11 @@ import { Suspense } from "react";
 import ProductsSkeleton from "../ProductsSkeleton";
 
 type SearchParamsProps = {
-        searchParams: Promise<{ query?: string | null; sort?: string | null; page?: number; pageSize?: number }>;
+        searchParams: { query?: string | null; sort?: string | null; page?: number; pageSize?: number };
 };
 
 const SearchPage = async ({ searchParams }: SearchParamsProps) => {
-        let { query, sort } = await searchParams;
+        let { query, sort } = searchParams;
 
         sort = String(sort);
         query = query?.trim() ?? "";
