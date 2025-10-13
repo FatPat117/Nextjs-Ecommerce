@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ProductsSkeleton from "../../ProductsSkeleton";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-        const { slug } = await params;
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+        const { slug } = params;
         const category = await db.category.findUnique({
                 where: { slug },
                 select: {
@@ -28,13 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 type ParamsProps = {
-        params: Promise<{ slug: string }>;
-        searchParams?: Promise<{ sort?: string | null }>;
+        params: { slug: string };
+        searchParams?: { sort?: string | null };
 };
 
 const CategoryPage = async ({ params, searchParams }: ParamsProps) => {
-        const { slug } = await params;
-        const { sort } = (await searchParams) || {};
+        const { slug } = params;
+        const { sort } = searchParams || {};
 
         const category = await db.category.findUnique({
                 where: {
