@@ -1,0 +1,69 @@
+[33m500bd3d[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix Promise Params
+[33m6ad6a64[m Fix bug for deployment
+[33m4e8d5f4[m Optimize: getProducts Function By Cached used Unstable_cache
+[33md5641ab[m Update Cart Mutations
+[33m942e8f7[m SWR and useCart Custom Hook
+[33m4b5bf5d[m Adding robots.txt
+[33md2882f0[m Generating Sitemap (Dynamically)
+[33m21dc5f6[m  Adding JSON-LD (Structured Data)
+[33m6efbf9d[m Production Build & Fixing Issues
+[33m73ea768[m Admin Edit Page
+[33m4a5d6cc[m Add Product For Admin
+[33m3f2b8b8[m Admin Page Design
+[33md74ff0f[m My orders
+[33m581d13f[m Sign Up Function
+[33m8de7660[m Sign Up
+[33m78439b0[m Session/JWT Callbacks & Augmenting TS Types
+[33m92f6373[m Credentials Provider Logic
+[33m9ab138b[m Mixing shadcn/ui with React Hook Form
+[33m6a62c65[m Setting Up Zod and Sign-in Schema
+[33mee010e3[m Hashing Passwords
+[33m7b9b24d[m Installing Auth.js and Basic Setup
+[33mcd004fc[m Testing the Stripe Webhook with Stripe CLI
+[33m8fd8d8a[m Implementing Stripe Webook Route Handler
+[33m3478c1a[m Payment Sucess Route Handler
+[33m82c4f5e[m Payment Cancelled Route Handler
+[33m161e6a6[m Making the Checkout Form
+[33me942de0[m Implementing Checkout Process
+[33m0417f52[m Create Stripe Implementing createCheckoutSession
+[33m9a1069f[m createOrder Server Action
+[33m22f8de9[m Configuring Stripe
+[33mf6acbea[m Order & OrderItem Prisma Schema
+[33m5b9c5f2[m Cart Summary
+[33mb6a932a[m Removing Item from Cart
+[33mb05c6a9[m Increasing and Decreasing the Cart Item Quantity
+[33m39e8435[m Cart Page Design
+[33m19678f5[m Revalidate Tags when addToCart
+[33m8ff89a1[m Navbar Cart Counter
+[33mb62bf67[m AddToCart function
+[33ma535af7[m getOrCreateCart Database Utility
+[33m480ee33[m Finding the Right Cart: Reading Cookies with the getCart Utility
+[33mb8883cd[m Designing & Migrating the Cart Database Schema
+[33m86e7072[m Refactoring Pages to use getProducts
+[33mb3f29e0[m getProducts Server Action
+[33ma3e738a[m Sorting Controls in Layout
+[33md7dce47[m Nested Layout with Categories and Sorting
+[33ma2e89f5[m Products by Category Page
+[33mdeafc2e[m Fixing UI/UX Issues
+[33m8cf52be[m Search Function
+[33m00bc63d[m Breadcrumbs
+[33m00749c7[m Mobile Navbar and Footer
+[33mc79fff4[m Build the Navigation
+[33m113d333[m Implementing Dark Mode and Theme Toggle from shadcnUi
+[33m88be706[m Fix Bug in Product Page
+[33m79de1ea[m  Adding Metadata and SEO Optimization
+[33m8e372e8[m Loading State for Product
+[33ma985f81[m Dynamic Routes - Product Page
+[33mf3b563c[m Using Suspense with searchParams
+[33mf09b92a[m Adding Pagination Links
+[33m365abd6[m Adding Loading Skeleton for Products
+[33mcdb9bfe[m Fetching Products in Server Component
+[33m348c6e6[m Seeding: Adding Products
+[33m7f6fa59[m Seeding: Prisma Client, Deleting Data & Inserting Categories
+[33m65d4433[m Creating and Running a Seeding Script
+[33md632d26[m Product & Categories: Relations One to many
+[33mc66ab72[m Product Model and Migration
+[33m9ac309a[m Type Safety and Mock Data
+[33md355335[m Setting Up Prisma
+[33me3914c6[m Running Postgres Using Docker
+[33m94ffd1b[m Initial commit from Create Next App
